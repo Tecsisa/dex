@@ -17,6 +17,14 @@ const (
 	// This is exported, so it can be used to set the expiration
 	// time in refresh token flow.
 	DefaultSessionValidityWindow = 12 * time.Hour
+
+	ResetPasswordValidityWindow = 1 * time.Hour
+
+	InvitationEmailValidityWindow = 7 * 24 * time.Hour // one week
+
+	VerifyEmailValidityWindow = 1 * time.Hour
+
+	TokenValidityWindow = 1 * time.Hour
 )
 
 type SessionState string

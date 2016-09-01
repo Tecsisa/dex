@@ -89,8 +89,9 @@ func (u *UserEmailer) SendResetPasswordEmail(email string, redirectURL url.URL, 
 		return nil, err
 	}
 
+	resetPasswordValidityWindow := 1 * time.Hour
 	passwordReset := user.NewPasswordReset(usr.ID, pwi.Password, u.issuerURL,
-		clientID, redirectURL, u.tokenValidityWindow)
+		clientID, redirectURL, resetPasswordValidityWindow)
 
 	token, err := u.signedClaimsToken(passwordReset.Claims)
 	if err != nil {
@@ -127,8 +128,9 @@ func (u *UserEmailer) SendInviteEmail(email string, redirectURL url.URL, clientI
 		return nil, err
 	}
 
+	invitationEmailValidityWindow := 7 * 24 * time.Hour
 	invitation := user.NewInvitation(usr, pwi.Password, u.issuerURL,
-		clientID, redirectURL, u.tokenValidityWindow)
+		clientID, redirectURL, invitationEmailValidityWindow)
 
 	token, err := u.signedClaimsToken(invitation.Claims)
 	if err != nil {
@@ -167,7 +169,8 @@ func (u *UserEmailer) SendEmailVerification(userID, clientID string, redirectURL
 		return nil, err
 	}
 
-	ev := user.NewEmailVerification(usr, clientID, u.issuerURL, redirectURL, u.tokenValidityWindow)
+	verifyEmailValidityWindow := 1 * time.Hour
+	ev := user.NewEmailVerification(usr, clientID, u.issuerURL, redirectURL, verifyEmailValidityWindow)
 
 	signer, err := u.signerFn()
 	if err != nil || signer == nil {
