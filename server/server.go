@@ -492,7 +492,7 @@ func (s *Server) ClientCredsToken(creds oidc.ClientCredentials) (*jose.JWT, erro
 	}
 
 	now := time.Now()
-	exp := now.Add(s.SessionManager.ValidityWindow)
+	exp := now.Add(session.TokenValidityWindow)
 	claims := oidc.NewClaims(s.IssuerURL.String(), creds.ID, creds.ID, now, exp)
 	claims.Add("name", creds.ID)
 
@@ -661,7 +661,7 @@ func (s *Server) RefreshToken(creds oidc.ClientCredentials, scopes scope.Scopes,
 	}
 
 	now := time.Now()
-	expireAt := now.Add(session.DefaultSessionValidityWindow)
+	expireAt := now.Add(session.TokenValidityWindow)
 
 	claims := oidc.NewClaims(s.IssuerURL.String(), usr.ID, creds.ID, now, expireAt)
 	usr.AddToClaims(claims)

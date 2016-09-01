@@ -74,7 +74,8 @@ func (h *InvitationHandler) handleGET(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	passwordReset := invite.PasswordReset(h.issuerURL, h.redirectValidityWindow)
+	resetPasswordValidityWindow := 1 * time.Hour
+	passwordReset := invite.PasswordReset(h.issuerURL, resetPasswordValidityWindow)
 	signer, err := h.signerFunc()
 	if err != nil || signer == nil {
 		log.Errorf("error getting signer: %v (signer: %v)", err, signer)
