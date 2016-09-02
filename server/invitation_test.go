@@ -160,7 +160,7 @@ func TestInvitationHandler(t *testing.T) {
 			}
 
 			expTime := pwrReset.Claims["exp"].(int64)
-			if expTime > tZero.Add(handler.redirectValidityWindow).Unix() ||
+			if expTime > tZero.Add(1*time.Hour).Unix() ||
 				expTime < tZero.Unix() {
 				t.Errorf("case %d: funny expiration time detected: %d", i, pwrReset.Claims["exp"])
 			}
