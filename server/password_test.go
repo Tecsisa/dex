@@ -428,7 +428,7 @@ func TestResetPasswordHandler(t *testing.T) {
 			},
 			method: "POST",
 
-			wantCode:       http.StatusSeeOther,
+			wantCode:       http.StatusOK,
 			wantFormValues: &url.Values{},
 			wantPassword:   "NEW_PASSWORD",
 		},
