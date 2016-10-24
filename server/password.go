@@ -230,7 +230,7 @@ func (r *resetPasswordRequest) handlePOST() {
 	}
 
 	plaintext := r.r.FormValue("password")
-	cbURL, err := r.h.um.ChangePassword(r.pwReset, plaintext)
+	_, err := r.h.um.ChangePassword(r.pwReset, plaintext)
 	if err != nil {
 		switch err {
 		case usermanager.ErrorPasswordAlreadyChanged:
@@ -251,13 +251,17 @@ func (r *resetPasswordRequest) handlePOST() {
 			return
 		}
 	}
-	if cbURL == nil {
-		r.data.Success = true
-		execTemplate(r.w, r.h.tpl, r.data)
-		return
-	}
 
-	http.Redirect(r.w, r.r, cbURL.String(), http.StatusSeeOther)
+	// TODO rsoleto: we don't redirect in change password due to client doesn't have a valid session state
+	r.data.Success = true
+	execTemplate(r.w, r.h.tpl, r.data)
+	//if cbURL == nil {
+	//	r.data.Success = true
+	//	execTemplate(r.w, r.h.tpl, r.data)
+	//	return
+	//}
+	//
+	//http.Redirect(r.w, r.r, cbURL.String(), http.StatusSeeOther)
 }
 
 func (r *resetPasswordRequest) parseAndVerifyToken() bool {
