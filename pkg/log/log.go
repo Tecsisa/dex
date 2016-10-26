@@ -2,82 +2,88 @@ package log
 
 import (
 	"fmt"
+	"github.com/Sirupsen/logrus"
 	"io"
-	"log"
 	"os"
 )
 
-const (
-	calldepth = 2
-)
-
 var (
-	logger = log.New(os.Stderr, "", 0)
-	debug  = false
+	logger = &logrus.Logger{
+		Out:       initLogOut(),
+		Formatter: &logrus.JSONFormatter{},
+		Hooks:     make(logrus.LevelHooks),
+		Level:     logrus.InfoLevel,
+	}
 )
 
 func EnableTimestamps() {
-	logger.SetFlags(logger.Flags() | log.Ldate | log.Ltime)
+	// Logrus always enable timestamps
 }
 
 func EnableDebug() {
-	debug = true
+	logger.Level = logrus.DebugLevel
 }
 
 func Debug(v ...interface{}) {
-	if debug {
-		logger.Output(calldepth, header("DEBUG", fmt.Sprint(v...)))
-	}
+	logger.Debug(fmt.Sprint(v...))
 }
 
 func Debugf(format string, v ...interface{}) {
-	if debug {
-		logger.Output(calldepth, header("DEBUG", fmt.Sprintf(format, v...)))
-	}
+	logger.Debug(fmt.Sprintf(format, v...))
 }
 
 func Info(v ...interface{}) {
-	logger.Output(calldepth, header("INFO", fmt.Sprint(v...)))
+	logger.Info(fmt.Sprint(v...))
 }
 
 func Infof(format string, v ...interface{}) {
-	logger.Output(calldepth, header("INFO", fmt.Sprintf(format, v...)))
+	logger.Info(fmt.Sprintf(format, v...))
 }
 
 func Error(v ...interface{}) {
-	logger.Output(calldepth, header("ERROR", fmt.Sprint(v...)))
+	logger.Error(fmt.Sprint(v...))
 }
 
 func Errorf(format string, v ...interface{}) {
-	logger.Output(calldepth, header("ERROR", fmt.Sprintf(format, v...)))
+	logger.Error(fmt.Sprintf(format, v...))
 }
 
 func Warning(v ...interface{}) {
-	logger.Output(calldepth, header("WARN", fmt.Sprint(v...)))
+	logger.Warn(fmt.Sprint(v...))
 }
 
 func Warningf(format string, v ...interface{}) {
-	logger.Output(calldepth, header("WARN", fmt.Sprintf(format, v...)))
+	logger.Warn(fmt.Sprintf(format, v...))
 }
 
 func Fatal(v ...interface{}) {
-	logger.Output(calldepth, header("FATAL", fmt.Sprint(v...)))
-	os.Exit(1)
+	logger.Fatal(fmt.Sprint(v...))
 }
 
 func Fatalf(format string, v ...interface{}) {
-	logger.Output(calldepth, header("FATAL", fmt.Sprintf(format, v...)))
-	os.Exit(1)
+	logger.Fatal(fmt.Sprintf(format, v...))
 }
 
-func header(lvl, msg string) string {
-	return fmt.Sprintf("%s: %s", lvl, msg)
+func initLogOut() io.Writer {
+	var result io.Writer
+	logPath := os.Getenv("DEX_LOG_PATH")
+	if logPath != "" {
+		logfile, err := os.OpenFile(logPath, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
+		if err != nil {
+			return os.Stderr
+		}
+		result = logfile
+	} else {
+		result = os.Stdout
+	}
+
+	return result
 }
 
 type logWriter string
 
-func (l logWriter) Write(p []byte) (n int, err error) {
-	logger.Output(calldepth, header(string(l), string(p)))
+func (l logWriter) Write(p []byte) (int, error) {
+	logger.Info(string(p))
 	return len(p), nil
 }
 
