@@ -1,5 +1,5 @@
-hash: a453b9008bef3edc06f6df648bc40048ab387bf03a3e9127cdccb817569d518e
-updated: 2016-08-27T08:50:06.025458672-07:00
+hash: 3d007a4c46ca6f3595b51f022646ca07953ebff58ec86a10fb0dda90465521a0
+updated: 2016-10-26T09:53:36.472540128+02:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 6122e68c2642b7b75c538a63b15168c6c80fb757
@@ -49,6 +49,8 @@ imports:
   version: 53184e1edfb4f9655b0fa8dd2c23e7763f452bda
   subpackages:
   - sqlparse
+- name: github.com/Sirupsen/logrus
+  version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
 - name: github.com/spf13/cobra
   version: b3f29e98e63a3618988a231fd02b45c1e6369d4f
 - name: github.com/spf13/pflag
@@ -61,8 +63,8 @@ imports:
 - name: golang.org/x/net
   version: dfe268fd2bb5c793f4c083803609fce9806c6f80
   subpackages:
-  - html
   - context
+  - html
   - html/atom
 - name: google.golang.org/api
   version: d3edb0282bde692467788c50070a9211afe75cf3
